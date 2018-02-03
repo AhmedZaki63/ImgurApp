@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ahmed.imgurapp.Adapters.PhotoAdapter;
 import com.example.ahmed.imgurapp.Models.Photo;
 import com.example.ahmed.imgurapp.Models.PhotoResponse;
 import com.example.ahmed.imgurapp.Network.PhotoApi;
@@ -56,7 +57,7 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
 
         photos = new ArrayList<>();

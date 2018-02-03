@@ -1,6 +1,8 @@
 package com.example.ahmed.imgurapp.Models;
 
+import org.parceler.Parcel;
 
+@Parcel
 public class Tag {
     private String name;
     private String displayName;
@@ -8,7 +10,6 @@ public class Tag {
     private Integer totalItems;
     private Boolean following;
     private String backgroundHash;
-    private Object thumbnailHash;
     private String accent;
     private Boolean backgroundIsAnimated;
     private Boolean thumbnailIsAnimated;
@@ -61,14 +62,6 @@ public class Tag {
 
     public void setBackgroundHash(String backgroundHash) {
         this.backgroundHash = backgroundHash;
-    }
-
-    public Object getThumbnailHash() {
-        return thumbnailHash;
-    }
-
-    public void setThumbnailHash(Object thumbnailHash) {
-        this.thumbnailHash = thumbnailHash;
     }
 
     public String getAccent() {

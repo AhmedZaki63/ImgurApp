@@ -1,8 +1,11 @@
 package com.example.ahmed.imgurapp.Models;
 
+import org.parceler.Parcel;
+
+import java.util.ArrayList;
 import java.util.List;
 
-
+@Parcel
 public class Photo {
     private String id;
     private String title;
@@ -18,9 +21,9 @@ public class Photo {
     private Integer points;
     private Integer score;
     private Boolean is_album;
-    private Integer imagesCount;
+    private Integer images_count;
     private List<Tag> tags = null;
-    private List<Photo> images = null;
+    private ArrayList<Photo> images = null;
     private String type;
     private Boolean animated;
     private Integer width;
@@ -138,12 +141,12 @@ public class Photo {
         this.is_album = is_album;
     }
 
-    public Integer getImagesCount() {
-        return imagesCount;
+    public Integer getImages_count() {
+        return images_count;
     }
 
-    public void setImagesCount(Integer imagesCount) {
-        this.imagesCount = imagesCount;
+    public void setImages_count(Integer images_count) {
+        this.images_count = images_count;
     }
 
     public List<Tag> getTags() {
@@ -154,11 +157,11 @@ public class Photo {
         this.tags = tags;
     }
 
-    public List<Photo> getImages() {
+    public ArrayList<Photo> getImages() {
         return images;
     }
 
-    public void setImages(List<Photo> images) {
+    public void setImages(ArrayList<Photo> images) {
         this.images = images;
     }
 
