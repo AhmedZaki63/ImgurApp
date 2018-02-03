@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Imgur App</string>
+    <string name="action_settings">Setting</string>
+
+    <!-- Setting Sort -->
+    <string name="pref_sort_title">Sort by</string>
+    <string name="pref_default_sort">viral</string>
+    <string-array name="pref_sort_list_titles">
+        <item>Viral</item>
+        <item>Top</item>
+        <item>Time</item>
+        <item>Rising</item>
+    </string-array>
+    <string-array name="pref_sort_list_values">
+        <item>viral</item>
+        <item>top</item>
+        <item>time</item>
+        <item>rising</item>
+    </string-array>
 </resources>

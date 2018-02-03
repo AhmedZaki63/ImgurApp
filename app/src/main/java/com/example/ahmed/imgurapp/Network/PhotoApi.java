@@ -13,6 +13,6 @@ public interface PhotoApi {
     @GET("{section}/{sort}/{page}")
     Call<PhotoResponse> getPhotosData(@Path("section") String section
             , @Path("sort") String sort
-            , @Path("page") String page
+            , @Path("page") int page
             , @Query("client_id") String apiKey);
 }

@@ -6,13 +6,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ahmed.imgurapp.Models.Photo;
+import com.example.ahmed.imgurapp.Util.DynamicHeightImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoVH> {
 
@@ -36,10 +39,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoVH> {
         Photo photo = photos.get(position);
         holder.title.setText(photos.get(position).getTitle());
         if (photo.getIs_album()) {
+            holder.photo.setHeightRatio(((double) photo.getCover_height()) / photo.getCover_width());
             Picasso.with(context)
                     .load("https://i.imgur.com/" + photo.getCover() + "h.jpg")
                     .into(holder.photo);
         } else {
+            holder.photo.setHeightRatio(((double) photo.getHeight()) / photo.getWidth());
             Picasso.with(context)
                     .load("https://i.imgur.com/" + photo.getId() + "h.jpg")
                     .into(holder.photo);
@@ -56,14 +61,20 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoVH> {
         notifyDataSetChanged();
     }
 
+    void addData(ArrayList<Photo> photos) {
+        this.photos.addAll(photos);
+        notifyDataSetChanged();
+    }
+
     class PhotoVH extends RecyclerView.ViewHolder {
-        ImageView photo;
+        @BindView(R.id.photo)
+        DynamicHeightImageView photo;
+        @BindView(R.id.title)
         TextView title;
 
         PhotoVH(View itemView) {
             super(itemView);
-            photo = itemView.findViewById(R.id.photo);
-            title = itemView.findViewById(R.id.title);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
