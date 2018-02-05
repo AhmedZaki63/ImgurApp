@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Imgur App</string>
     <string name="action_settings">Setting</string>
+    <string name="action_share">Share</string>
 
     <string name="description_header">Description</string>
     <string name="no_description_text">No Description</string>

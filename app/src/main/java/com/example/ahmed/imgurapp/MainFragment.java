@@ -27,6 +27,8 @@ import com.example.ahmed.imgurapp.Network.PhotoApi;
 import com.example.ahmed.imgurapp.Network.PhotoClient;
 import com.example.ahmed.imgurapp.Util.EndlessRecyclerViewScrollListener;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -89,6 +91,11 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
             }
         });
 
+        if (savedInstanceState != null && savedInstanceState.containsKey("photos")) {
+            photos = Parcels.unwrap(savedInstanceState.getParcelable("photos"));
+            photoAdapter.setData(photos);
+        }
+
         return view;
     }
 
@@ -124,6 +131,13 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (!photos.isEmpty())
+            outState.putParcelable("photos", Parcels.wrap(photos));
+    }
+
     public void fetchPhotosData() {
         photoApi.getPhotosData("hot", sort, page
                 , BuildConfig.PHOTO_CLIENT_ID).enqueue(new retrofit2.Callback<PhotoResponse>() {
@@ -132,9 +146,6 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
                     , @NonNull retrofit2.Response<PhotoResponse> response) {
                 Log.v("url", response.raw().request().url().toString());
                 if (response.isSuccessful()) {
-                    Snackbar.make(getActivity().findViewById(R.id.swipe_refresh_layout)
-                            , "Data Updated!"
-                            , Snackbar.LENGTH_SHORT).show();
                     PhotoResponse photoResponse = response.body();
                     if (photoResponse != null) {
                         photos = photoResponse.getData();
@@ -143,14 +154,17 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
                         else
                             photoAdapter.addData(photos);
                     }
+                    if (getView() != null)
+                        Snackbar.make(getView(), "Data Updated!"
+                                , Snackbar.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull retrofit2.Call<PhotoResponse> call, @NonNull Throwable t) {
-                Snackbar.make(getActivity().findViewById(R.id.swipe_refresh_layout)
-                        , "Fail to Update Data!"
-                        , Snackbar.LENGTH_LONG).show();
+                if (getView() != null)
+                    Snackbar.make(getView(), "Fail to Update Data!"
+                            , Snackbar.LENGTH_SHORT).show();
             }
         });
     }
