@@ -2,6 +2,7 @@
     <string name="app_name">Imgur App</string>
     <string name="action_settings">Setting</string>
     <string name="action_share">Share</string>
+    <string name="action_favourite">Add/Remove Favourite</string>
 
     <string name="description_header">Description</string>
     <string name="no_description_text">No Description</string>
@@ -16,11 +17,16 @@
         <item>Top</item>
         <item>Time</item>
         <item>Rising</item>
+        <item>Favourite</item>
     </string-array>
     <string-array name="pref_sort_list_values">
         <item>viral</item>
         <item>top</item>
         <item>time</item>
         <item>rising</item>
+        <item>favourite</item>
     </string-array>
+
+    <!-- Setting Clear Favourite -->
+    <string name="prefs_title_clear_favourite">Clear Favourite</string>
 </resources>

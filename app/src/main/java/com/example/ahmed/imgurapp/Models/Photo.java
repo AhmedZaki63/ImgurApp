@@ -11,9 +11,6 @@ public class Photo {
     private String title;
     private String description;
     private Integer datetime;
-    private String cover;
-    private Integer cover_width;
-    private Integer cover_height;
     private Integer views;
     private String link;
     private Integer ups;
@@ -21,9 +18,14 @@ public class Photo {
     private Integer points;
     private Integer score;
     private Boolean is_album;
-    private Integer images_count;
     private List<Tag> tags = null;
+    //only in album
+    private String cover;
+    private Integer cover_width;
+    private Integer cover_height;
+    private Integer images_count;
     private ArrayList<Photo> images = null;
+    //only in image
     private String type;
     private Boolean animated;
     private Integer width;
@@ -62,27 +64,17 @@ public class Photo {
     }
 
     public String getCover() {
-        return cover;
+        if (is_album != null && is_album)
+            return cover;
+        else
+            return id;
     }
 
     public void setCover(String cover) {
-        this.cover = cover;
-    }
-
-    public Integer getCover_width() {
-        return cover_width;
-    }
-
-    public void setCover_width(Integer cover_width) {
-        this.cover_width = cover_width;
-    }
-
-    public Integer getCover_height() {
-        return cover_height;
-    }
-
-    public void setCover_height(Integer cover_height) {
-        this.cover_height = cover_height;
+        if (is_album != null && is_album)
+            this.id = cover;
+        else
+            this.cover = cover;
     }
 
     public Integer getViews() {
@@ -182,18 +174,30 @@ public class Photo {
     }
 
     public Integer getWidth() {
-        return width;
+        if (is_album != null && is_album)
+            return cover_width;
+        else
+            return width;
     }
 
     public void setWidth(Integer width) {
-        this.width = width;
+        if (is_album != null && is_album)
+            this.cover_width = width;
+        else
+            this.width = width;
     }
 
     public Integer getHeight() {
-        return height;
+        if (is_album != null && is_album)
+            return cover_height;
+        else
+            return height;
     }
 
     public void setHeight(Integer height) {
-        this.height = height;
+        if (is_album != null && is_album)
+            this.cover_height = height;
+        else
+            this.height = height;
     }
 }

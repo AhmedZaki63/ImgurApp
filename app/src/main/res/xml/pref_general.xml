@@ -6,4 +6,8 @@
         android:entryValues="@array/pref_sort_list_values"
         android:key="prefs_sort_list_key"
         android:title="@string/pref_sort_title" />
+
+    <Preference
+        android:key="prefs_clear_favourite_key"
+        android:title="@string/prefs_title_clear_favourite" />
 </PreferenceScreen>

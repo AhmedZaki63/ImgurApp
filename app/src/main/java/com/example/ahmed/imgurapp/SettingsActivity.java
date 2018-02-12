@@ -1,12 +1,16 @@
 package com.example.ahmed.imgurapp;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+
+import com.example.ahmed.imgurapp.Database.PhotoDbHelper;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -73,6 +77,26 @@ public class SettingsActivity extends AppCompatActivity {
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.pref_general);
             bindPreferenceSummaryToValue(findPreference("prefs_sort_list_key"));
+            Preference clearPreference = findPreference("prefs_clear_favourite_key");
+            clearPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setPositiveButton("Clear favourite", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            PhotoDbHelper photoDbHelper = new PhotoDbHelper(getActivity());
+                            photoDbHelper.removeAllFromDatabase();
+                        }
+                    }).setNegativeButton("Cancel", null);
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.setMessage("Clear all favourite photos?");
+                    alertDialog.show();
+
+                    return false;
+                }
+            });
         }
     }
 }

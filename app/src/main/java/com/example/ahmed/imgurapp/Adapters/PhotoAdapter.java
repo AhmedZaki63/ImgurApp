@@ -54,16 +54,14 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoVH> {
         });
         Photo photo = photos.get(position);
         holder.title.setText(photos.get(position).getTitle());
-        if (photo.getIs_album()) {
-            holder.photo.setHeightRatio(((double) photo.getCover_height()) / photo.getCover_width());
-            Picasso.with(context)
-                    .load("https://i.imgur.com/" + photo.getCover() + "h.jpg")
-                    .into(holder.photo);
-        } else {
-            holder.photo.setHeightRatio(((double) photo.getHeight()) / photo.getWidth());
-            Picasso.with(context)
-                    .load("https://i.imgur.com/" + photo.getId() + "h.jpg")
-                    .into(holder.photo);
+        holder.photo.setHeightRatio(((double) photo.getHeight()) / photo.getWidth());
+        Picasso.with(context)
+                .load("https://i.imgur.com/" + photo.getCover() + "h.jpg")
+                .into(holder.photo);
+        Integer count = photo.getImages_count();
+        if (count != null) {
+            holder.imagesCount.setVisibility(View.VISIBLE);
+            holder.imagesCount.setText(String.valueOf(count));
         }
     }
 
@@ -77,16 +75,13 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoVH> {
         notifyDataSetChanged();
     }
 
-    public void addData(ArrayList<Photo> photos) {
-        this.photos.addAll(photos);
-        notifyDataSetChanged();
-    }
-
     class PhotoVH extends RecyclerView.ViewHolder {
         @BindView(R.id.photo)
         DynamicHeightImageView photo;
         @BindView(R.id.title)
         TextView title;
+        @BindView(R.id.images_count)
+        TextView imagesCount;
 
         PhotoVH(View itemView) {
             super(itemView);

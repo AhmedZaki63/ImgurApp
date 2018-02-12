@@ -28,6 +28,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
+        <provider
+            android:name="com.example.ahmed.imgurapp.Database.PhotoProvider"
+            android:authorities="com.example.ahmed.imgurapp"
+            android:exported="false" />
     </application>
 
 </manifest>

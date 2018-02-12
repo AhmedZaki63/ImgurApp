@@ -5,9 +5,24 @@
     android:layout_height="match_parent"
     android:background="@color/background_color">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_of_photos"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginBottom="80dp">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_of_photos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/main_progress_bar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/round"
+            android:padding="15dp"
+            android:visibility="gone" />
+    </FrameLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

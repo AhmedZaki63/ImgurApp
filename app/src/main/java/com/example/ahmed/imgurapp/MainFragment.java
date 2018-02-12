@@ -19,15 +19,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.ahmed.imgurapp.Adapters.PhotoAdapter;
+import com.example.ahmed.imgurapp.Database.PhotoDbHelper;
 import com.example.ahmed.imgurapp.Models.Photo;
 import com.example.ahmed.imgurapp.Models.PhotoResponse;
 import com.example.ahmed.imgurapp.Network.PhotoApi;
 import com.example.ahmed.imgurapp.Network.PhotoClient;
 import com.example.ahmed.imgurapp.Util.EndlessRecyclerViewScrollListener;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -42,16 +42,19 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
     PhotoApi photoApi;
     String sort;
     int page = 0;
+    boolean preferenceChanged;
 
     @BindView(R.id.rv_of_photos)
     RecyclerView photoView;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
-    private boolean preferenceChanged;
+    @BindView(R.id.main_progress_bar)
+    ProgressBar progressBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         setHasOptionsMenu(true);
     }
 
@@ -62,7 +65,8 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
 
-        photos = new ArrayList<>();
+        if (photos == null)
+            photos = new ArrayList<>();
         photoAdapter = new PhotoAdapter(photos, getContext());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(
                 2, StaggeredGridLayoutManager.VERTICAL);
@@ -70,8 +74,10 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
                 new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
                     @Override
                     public void onLoadMore(int p, int totalItemsCount, RecyclerView view) {
-                        page++;
-                        fetchPhotosData();
+                        if (!sort.equals("favourite")) {
+                            page++;
+                            fetchPhotosData();
+                        }
                     }
                 };
 
@@ -84,17 +90,14 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page = 0;
-                viewScrollListener.resetState();
-                fetchPhotosData();
+                if (!sort.equals("favourite")) {
+                    page = 0;
+                    viewScrollListener.resetState();
+                    fetchPhotosData();
+                }
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-
-        if (savedInstanceState != null && savedInstanceState.containsKey("photos")) {
-            photos = Parcels.unwrap(savedInstanceState.getParcelable("photos"));
-            photoAdapter.setData(photos);
-        }
 
         return view;
     }
@@ -105,7 +108,11 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sort = prefs
                 .getString("prefs_sort_list_key", getString(R.string.pref_default_sort));
-        if (preferenceChanged || photos.isEmpty()) {
+        if (sort.equals("favourite")) {
+            PhotoDbHelper photoDbHelper = new PhotoDbHelper(getContext());
+            photos = photoDbHelper.getAllFromDatabase();
+            photoAdapter.setData(photos);
+        } else if (preferenceChanged || photos.isEmpty()) {
             page = 0;
             viewScrollListener.resetState();
             fetchPhotosData();
@@ -131,14 +138,8 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (!photos.isEmpty())
-            outState.putParcelable("photos", Parcels.wrap(photos));
-    }
-
     public void fetchPhotosData() {
+        progressBar.setVisibility(View.VISIBLE);
         photoApi.getPhotosData("hot", sort, page
                 , BuildConfig.PHOTO_CLIENT_ID).enqueue(new retrofit2.Callback<PhotoResponse>() {
             @Override
@@ -148,16 +149,17 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
                 if (response.isSuccessful()) {
                     PhotoResponse photoResponse = response.body();
                     if (photoResponse != null) {
-                        photos = photoResponse.getData();
                         if (page == 0)
-                            photoAdapter.setData(photos);
+                            photos = photoResponse.getData();
                         else
-                            photoAdapter.addData(photos);
+                            photos.addAll(photoResponse.getData());
+                        photoAdapter.setData(photos);
                     }
                     if (getView() != null)
                         Snackbar.make(getView(), "Data Updated!"
                                 , Snackbar.LENGTH_SHORT).show();
                 }
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -165,6 +167,7 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
                 if (getView() != null)
                     Snackbar.make(getView(), "Fail to Update Data!"
                             , Snackbar.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

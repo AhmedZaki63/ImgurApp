@@ -4,6 +4,7 @@ package com.example.ahmed.imgurapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -13,11 +14,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ahmed.imgurapp.Adapters.AlbumAdapter;
+import com.example.ahmed.imgurapp.Database.PhotoDbHelper;
 import com.example.ahmed.imgurapp.Models.AlbumResponse;
 import com.example.ahmed.imgurapp.Models.Photo;
 import com.example.ahmed.imgurapp.Network.PhotoApi;
@@ -41,6 +46,7 @@ public class DetailsFragment extends Fragment {
     ArrayList<Photo> photos;
     AlbumAdapter albumAdapter;
     PhotoApi photoApi;
+    PhotoDbHelper photoDbHelper;
 
     @BindView(R.id.details_title)
     TextView detailsTitle;
@@ -58,13 +64,23 @@ public class DetailsFragment extends Fragment {
     FloatingActionButton shareFab;
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
         ButterKnife.bind(this, view);
 
         photo = Parcels.unwrap(getArguments().getParcelable("photo"));
-        photos = new ArrayList<>();
+        if (photos == null)
+            photos = new ArrayList<>();
+
+        photoDbHelper = new PhotoDbHelper(getContext());
 
         shareFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,11 +103,15 @@ public class DetailsFragment extends Fragment {
             albumView.setAdapter(albumAdapter);
             albumView.setLayoutManager(new LinearLayoutManager(getContext()));
             photoApi = PhotoClient.createApi(PhotoClient.buildRetrofit());
-            if (savedInstanceState != null && savedInstanceState.containsKey("photos")) {
-                photos = Parcels.unwrap(savedInstanceState.getParcelable("photos"));
-                albumAdapter.setData(photos);
-            } else
-                fetchAlbumData();
+
+            if (photos.isEmpty()) {
+                if (photo.getImages_count() <= photo.getImages().size())
+                    photos = photo.getImages();
+                else
+                    fetchAlbumData();
+            }
+
+            albumAdapter.setData(photos);
         } else {
             imageView.setHeightRatio(((double) photo.getHeight()) / photo.getWidth());
             Picasso.with(getContext())
@@ -120,10 +140,22 @@ public class DetailsFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (!photos.isEmpty())
-            outState.putParcelable("photos", Parcels.wrap(photos));
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.details, menu);
+        if (photoDbHelper.isSaved(photo))
+            menu.getItem(0).setIcon(R.drawable.ic_favorite);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_favourite:
+                favourite(item);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void fetchAlbumData() {
@@ -134,10 +166,8 @@ public class DetailsFragment extends Fragment {
                 Log.v("url", response.raw().request().url().toString());
                 if (response.isSuccessful()) {
                     AlbumResponse albumResponse = response.body();
-                    if (albumResponse != null) {
+                    if (albumResponse != null)
                         photos = albumResponse.getData().getImages();
-                        albumAdapter.setData(photos);
-                    }
                     if (getView() != null)
                         Snackbar.make(getView(), "Data Updated!"
                                 , Snackbar.LENGTH_SHORT).show();
@@ -151,5 +181,15 @@ public class DetailsFragment extends Fragment {
                             , Snackbar.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void favourite(MenuItem item) {
+        if (photoDbHelper.isSaved(photo)) {
+            item.setIcon(R.drawable.ic_favorite_border);
+            photoDbHelper.removeFromDatabase(photo);
+        } else {
+            item.setIcon(R.drawable.ic_favorite);
+            photoDbHelper.addToDatabase(photo, photos);
+        }
     }
 }
