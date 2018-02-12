@@ -104,14 +104,13 @@ public class DetailsFragment extends Fragment {
             albumView.setLayoutManager(new LinearLayoutManager(getContext()));
             photoApi = PhotoClient.createApi(PhotoClient.buildRetrofit());
 
-            if (photos.isEmpty()) {
-                if (photo.getImages_count() <= photo.getImages().size())
-                    photos = photo.getImages();
-                else
-                    fetchAlbumData();
-            }
+            if (photo.getImages_count() <= photo.getImages().size())
+                photos = photo.getImages();
 
             albumAdapter.setData(photos);
+
+            if (photos.isEmpty())
+                fetchAlbumData();
         } else {
             imageView.setHeightRatio(((double) photo.getHeight()) / photo.getWidth());
             Picasso.with(getContext())
@@ -166,8 +165,10 @@ public class DetailsFragment extends Fragment {
                 Log.v("url", response.raw().request().url().toString());
                 if (response.isSuccessful()) {
                     AlbumResponse albumResponse = response.body();
-                    if (albumResponse != null)
+                    if (albumResponse != null) {
                         photos = albumResponse.getData().getImages();
+                        albumAdapter.setData(photos);
+                    }
                     if (getView() != null)
                         Snackbar.make(getView(), "Data Updated!"
                                 , Snackbar.LENGTH_SHORT).show();
