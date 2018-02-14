@@ -31,6 +31,8 @@ import com.example.ahmed.imgurapp.Models.Photo;
 import com.example.ahmed.imgurapp.Network.PhotoApi;
 import com.example.ahmed.imgurapp.Network.PhotoClient;
 import com.example.ahmed.imgurapp.Util.DynamicHeightImageView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -67,6 +69,8 @@ public class DetailsFragment extends Fragment {
     FloatingActionButton shareFab;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.adView)
+    AdView adView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,6 +91,11 @@ public class DetailsFragment extends Fragment {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        adView.loadAd(adRequest);
 
         photo = Parcels.unwrap(getArguments().getParcelable("photo"));
         if (photos == null)
