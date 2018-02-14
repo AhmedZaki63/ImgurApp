@@ -36,7 +36,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoVH> {
     @Override
     public PhotoVH onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.photo_item, parent, false);
+                .inflate(R.layout.item_photo, parent, false);
         return new PhotoVH(view);
     }
 
@@ -58,11 +58,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoVH> {
         Picasso.with(context)
                 .load("https://i.imgur.com/" + photo.getCover() + "h.jpg")
                 .into(holder.photo);
-        Integer count = photo.getImages_count();
-        if (count != null) {
-            holder.imagesCount.setVisibility(View.VISIBLE);
-            holder.imagesCount.setText(String.valueOf(count));
-        }
     }
 
     @Override
@@ -80,8 +75,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoVH> {
         DynamicHeightImageView photo;
         @BindView(R.id.title)
         TextView title;
-        @BindView(R.id.images_count)
-        TextView imagesCount;
 
         PhotoVH(View itemView) {
             super(itemView);

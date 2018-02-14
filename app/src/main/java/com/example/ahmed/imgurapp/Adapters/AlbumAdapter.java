@@ -29,7 +29,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.albumVH> {
     @Override
     public albumVH onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.album_item, parent, false);
+                .inflate(R.layout.item_album, parent, false);
         return new albumVH(view);
     }
 

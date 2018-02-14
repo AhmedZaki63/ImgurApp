@@ -4,13 +4,13 @@ package com.example.ahmed.imgurapp.Database;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-class PhotoContract {
+public class PhotoContract {
     static final String AUTHORITY = "com.example.ahmed.imgurapp";
     static final String PATH_PHOTOS = "Photos";
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
-    static final class PhotoEntry implements BaseColumns {
-        static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_PHOTOS).build();
+    public static final class PhotoEntry implements BaseColumns {
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_PHOTOS).build();
 
         static final String TABLE_NAME = "Photos";
 

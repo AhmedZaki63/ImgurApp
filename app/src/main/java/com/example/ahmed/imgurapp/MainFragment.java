@@ -1,8 +1,12 @@
 package com.example.ahmed.imgurapp;
 
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -22,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.example.ahmed.imgurapp.Adapters.PhotoAdapter;
+import com.example.ahmed.imgurapp.Database.PhotoContract;
 import com.example.ahmed.imgurapp.Database.PhotoDbHelper;
 import com.example.ahmed.imgurapp.Models.Photo;
 import com.example.ahmed.imgurapp.Models.PhotoResponse;
@@ -34,7 +39,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     ArrayList<Photo> photos;
     PhotoAdapter photoAdapter;
@@ -109,9 +115,8 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
         sort = prefs
                 .getString("prefs_sort_list_key", getString(R.string.pref_default_sort));
         if (sort.equals("favourite")) {
-            PhotoDbHelper photoDbHelper = new PhotoDbHelper(getContext());
-            photos = photoDbHelper.getAllFromDatabase();
-            photoAdapter.setData(photos);
+            getActivity().getLoaderManager()
+                    .initLoader(1, null, this);
         } else if (preferenceChanged || photos.isEmpty()) {
             page = 0;
             viewScrollListener.resetState();
@@ -170,6 +175,25 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
                 progressBar.setVisibility(View.GONE);
             }
         });
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getContext(), PhotoContract.PhotoEntry.CONTENT_URI, null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (sort.equals("favourite")) {
+            PhotoDbHelper photoDbHelper = new PhotoDbHelper(getContext());
+            photos = photoDbHelper.getAllFromDatabase(cursor);
+            photoAdapter.setData(photos);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 
     @Override

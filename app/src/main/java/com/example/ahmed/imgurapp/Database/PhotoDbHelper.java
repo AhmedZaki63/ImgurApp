@@ -51,51 +51,45 @@ public class PhotoDbHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public ArrayList<Photo> getAllFromDatabase() {
-        Cursor cursor = context.getContentResolver()
-                .query(PhotoEntry.CONTENT_URI, null, null, null, null);
-
+    public ArrayList<Photo> getAllFromDatabase(Cursor cursor) {
         ArrayList<Photo> photos = new ArrayList<>();
-        if (cursor != null) {
-            if (cursor.moveToFirst())
-                while (!cursor.isAfterLast()) {
-                    String id = cursor.getString(cursor.getColumnIndex(PhotoEntry.COLUMN_ID));
-                    String title = cursor.getString(cursor.getColumnIndex(PhotoEntry.COLUMN_TITLE));
-                    String description = cursor.getString(cursor.getColumnIndex(PhotoEntry.COLUMN_DESCRIPTION));
-                    String cover = cursor.getString(cursor.getColumnIndex(PhotoEntry.COLUMN_COVER));
-                    Integer is_album = cursor.getInt(cursor.getColumnIndex(PhotoEntry.COLUMN_IS_ALBUM));
-                    Integer images_count = cursor.getInt(cursor.getColumnIndex(PhotoEntry.COLUMN_IS_ALBUM));
+        if (cursor.moveToFirst())
+            while (!cursor.isAfterLast()) {
+                String id = cursor.getString(cursor.getColumnIndex(PhotoEntry.COLUMN_ID));
+                String title = cursor.getString(cursor.getColumnIndex(PhotoEntry.COLUMN_TITLE));
+                String description = cursor.getString(cursor.getColumnIndex(PhotoEntry.COLUMN_DESCRIPTION));
+                String cover = cursor.getString(cursor.getColumnIndex(PhotoEntry.COLUMN_COVER));
+                Integer is_album = cursor.getInt(cursor.getColumnIndex(PhotoEntry.COLUMN_IS_ALBUM));
+                Integer images_count = cursor.getInt(cursor.getColumnIndex(PhotoEntry.COLUMN_IS_ALBUM));
 
-                    String imagesString = cursor.getString(cursor.getColumnIndex(PhotoEntry.COLUMN_IMAGES));
-                    Type imagesType = new TypeToken<ArrayList<Photo>>() {
-                    }.getType();
-                    ArrayList<Photo> images = new Gson().fromJson(imagesString, imagesType);
+                String imagesString = cursor.getString(cursor.getColumnIndex(PhotoEntry.COLUMN_IMAGES));
+                Type imagesType = new TypeToken<ArrayList<Photo>>() {
+                }.getType();
+                ArrayList<Photo> images = new Gson().fromJson(imagesString, imagesType);
 
-                    String tagsString = cursor.getString(cursor.getColumnIndex(PhotoEntry.COLUMN_TAGS));
-                    Type tagsType = new TypeToken<ArrayList<Tag>>() {
-                    }.getType();
-                    ArrayList<Tag> tags = new Gson().fromJson(tagsString, tagsType);
+                String tagsString = cursor.getString(cursor.getColumnIndex(PhotoEntry.COLUMN_TAGS));
+                Type tagsType = new TypeToken<ArrayList<Tag>>() {
+                }.getType();
+                ArrayList<Tag> tags = new Gson().fromJson(tagsString, tagsType);
 
-                    Integer height = cursor.getInt(cursor.getColumnIndex(PhotoEntry.COLUMN_HEIGHT));
-                    Integer width = cursor.getInt(cursor.getColumnIndex(PhotoEntry.COLUMN_WIDTH));
+                Integer height = cursor.getInt(cursor.getColumnIndex(PhotoEntry.COLUMN_HEIGHT));
+                Integer width = cursor.getInt(cursor.getColumnIndex(PhotoEntry.COLUMN_WIDTH));
 
-                    Photo photo = new Photo();
-                    photo.setId(id);
-                    photo.setTitle(title);
-                    photo.setDescription(description);
-                    photo.setCover(cover);
-                    photo.setIs_album(is_album > 0);
-                    photo.setImages_count(images_count);
-                    photo.setImages(images);
-                    photo.setTags(tags);
-                    photo.setHeight(height);
-                    photo.setWidth(width);
+                Photo photo = new Photo();
+                photo.setId(id);
+                photo.setTitle(title);
+                photo.setDescription(description);
+                photo.setCover(cover);
+                photo.setIs_album(is_album > 0);
+                photo.setImages_count(images_count);
+                photo.setImages(images);
+                photo.setTags(tags);
+                photo.setHeight(height);
+                photo.setWidth(width);
 
-                    photos.add(photo);
-                    cursor.moveToNext();
-                }
-            cursor.close();
-        }
+                photos.add(photo);
+                cursor.moveToNext();
+            }
 
         return photos;
     }

@@ -30,9 +30,24 @@
         </activity>
 
         <provider
-            android:name="com.example.ahmed.imgurapp.Database.PhotoProvider"
+            android:name=".Database.PhotoProvider"
             android:authorities="com.example.ahmed.imgurapp"
             android:exported="false" />
+
+        <receiver android:name=".Widget.FavouriteWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/favourite_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".Widget.WidgetService"
+            android:enabled="true"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>
