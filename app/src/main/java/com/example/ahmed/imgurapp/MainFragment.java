@@ -14,8 +14,10 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -56,6 +58,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.main_progress_bar)
     ProgressBar progressBar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +74,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
+
+        //setup toolbar
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         if (photos == null)
             photos = new ArrayList<>();
@@ -145,7 +152,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public void fetchPhotosData() {
         progressBar.setVisibility(View.VISIBLE);
-        photoApi.getPhotosData("hot", sort, page
+        photoApi.getPhotosData(sort, page
                 , BuildConfig.PHOTO_CLIENT_ID).enqueue(new retrofit2.Callback<PhotoResponse>() {
             @Override
             public void onResponse(@NonNull retrofit2.Call<PhotoResponse> call

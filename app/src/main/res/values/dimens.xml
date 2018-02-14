@@ -3,4 +3,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="fab_elevation">2dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
+    <dimen name="text_padding">20dp</dimen>
 </resources>

@@ -32,7 +32,6 @@
                 android:padding="8dp"
                 android:textAlignment="center"
                 android:textAppearance="@android:style/TextAppearance.Large"
-                android:textColor="@android:color/white"
                 android:textSize="20sp" />
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>

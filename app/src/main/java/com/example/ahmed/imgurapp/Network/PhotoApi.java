@@ -11,9 +11,8 @@ import retrofit2.http.Query;
 
 public interface PhotoApi {
 
-    @GET("{section}/{sort}/{page}")
-    Call<PhotoResponse> getPhotosData(@Path("section") String section
-            , @Path("sort") String sort
+    @GET("hot/{sort}/{page}")
+    Call<PhotoResponse> getPhotosData(@Path("sort") String sort
             , @Path("page") int page
             , @Query("client_id") String apiKey);
 
