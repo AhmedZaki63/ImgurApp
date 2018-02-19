@@ -8,6 +8,11 @@
     <string name="no_description_text">No Description</string>
     <string name="tags_header">Tags</string>
     <string name="no_tags_text">No Tags</string>
+    <string name="response_text">Data Updated!</string>
+    <string name="failure_text">Fail to Update Data!</string>
+    <string name="clear_positive_btn">Clear favourite</string>
+    <string name="clear_negative_btn">Cancel</string>
+    <string name="clear_btn">Clear all favourite photos?</string>
 
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 

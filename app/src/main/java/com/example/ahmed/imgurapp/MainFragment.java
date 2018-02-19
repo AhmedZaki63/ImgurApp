@@ -35,6 +35,7 @@ import com.example.ahmed.imgurapp.Models.PhotoResponse;
 import com.example.ahmed.imgurapp.Network.PhotoApi;
 import com.example.ahmed.imgurapp.Network.PhotoClient;
 import com.example.ahmed.imgurapp.Util.EndlessRecyclerViewScrollListener;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.ArrayList;
 
@@ -168,7 +169,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                         photoAdapter.setData(photos);
                     }
                     if (getView() != null)
-                        Snackbar.make(getView(), "Data Updated!"
+                        Snackbar.make(getView(), R.string.response_text
                                 , Snackbar.LENGTH_SHORT).show();
                 }
                 progressBar.setVisibility(View.GONE);
@@ -177,9 +178,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             @Override
             public void onFailure(@NonNull retrofit2.Call<PhotoResponse> call, @NonNull Throwable t) {
                 if (getView() != null)
-                    Snackbar.make(getView(), "Fail to Update Data!"
-                            , Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), R.string.failure_text
+                            , Snackbar.LENGTH_LONG).show();
                 progressBar.setVisibility(View.GONE);
+                FirebaseCrash.log(getResources().getString(R.string.failure_text));
             }
         });
     }

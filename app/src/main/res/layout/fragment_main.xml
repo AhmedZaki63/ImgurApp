@@ -28,8 +28,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="80dp">
+            android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_of_photos"
@@ -43,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/round"
-                android:padding="15dp"
+                android:padding="@dimen/progress_bar_padding"
                 android:visibility="gone" />
         </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>

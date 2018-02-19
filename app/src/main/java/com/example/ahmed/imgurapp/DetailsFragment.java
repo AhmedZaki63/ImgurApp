@@ -33,6 +33,7 @@ import com.example.ahmed.imgurapp.Network.PhotoClient;
 import com.example.ahmed.imgurapp.Util.DynamicHeightImageView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.crash.FirebaseCrash;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -191,7 +192,7 @@ public class DetailsFragment extends Fragment {
                         albumAdapter.setData(photos);
                     }
                     if (getView() != null)
-                        Snackbar.make(getView(), "Data Updated!"
+                        Snackbar.make(getView(), R.string.response_text
                                 , Snackbar.LENGTH_SHORT).show();
                 }
             }
@@ -199,8 +200,9 @@ public class DetailsFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Call<AlbumResponse> call, @NonNull Throwable t) {
                 if (getView() != null)
-                    Snackbar.make(getView(), "Fail to Update Data!"
-                            , Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), R.string.failure_text
+                            , Snackbar.LENGTH_LONG).show();
+                FirebaseCrash.log(getResources().getString(R.string.failure_text));
             }
         });
     }

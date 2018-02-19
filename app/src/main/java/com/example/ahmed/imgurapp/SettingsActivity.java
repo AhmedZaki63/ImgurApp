@@ -82,16 +82,16 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setPositiveButton("Clear favourite", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(R.string.clear_positive_btn, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             PhotoDbHelper photoDbHelper = new PhotoDbHelper(getActivity());
                             photoDbHelper.removeAllFromDatabase();
                         }
-                    }).setNegativeButton("Cancel", null);
+                    }).setNegativeButton(R.string.clear_negative_btn, null);
 
                     AlertDialog alertDialog = builder.create();
-                    alertDialog.setMessage("Clear all favourite photos?");
+                    alertDialog.setMessage(getResources().getString(R.string.clear_btn));
                     alertDialog.show();
 
                     return false;

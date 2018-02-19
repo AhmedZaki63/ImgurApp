@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "336482530000",
+    "firebase_url": "https://imgurapp-a49a2.firebaseio.com",
+    "project_id": "imgurapp-a49a2",
+    "storage_bucket": "imgurapp-a49a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336482530000:android:a4fb2322505b5fbd",
+        "android_client_info": {
+          "package_name": "com.example.ahmed.imgurapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "336482530000-2dh4fs1h6a4j0ogqaim72t1g26ppdecq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ahmed.imgurapp",
+            "certificate_hash": "bba706c59717c481755935a0f4d732ff4517db4d"
+          }
+        },
+        {
+          "client_id": "336482530000-noqgfj0tkqo3cevp114u1c7jarvs707l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAzMgegfWR8SuHqYx6U0eEcN62KLSYdZ4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336482530000-noqgfj0tkqo3cevp114u1c7jarvs707l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
