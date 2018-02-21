@@ -76,8 +76,8 @@ public class SettingsActivity extends AppCompatActivity {
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.pref_general);
-            bindPreferenceSummaryToValue(findPreference("prefs_sort_list_key"));
-            Preference clearPreference = findPreference("prefs_clear_favourite_key");
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.prefs_sort_list_key)));
+            Preference clearPreference = findPreference(getString(R.string.prefs_clear_favourite_key));
             clearPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {

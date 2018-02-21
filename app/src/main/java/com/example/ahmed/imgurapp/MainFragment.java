@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -18,7 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,8 +31,8 @@ import com.example.ahmed.imgurapp.Database.PhotoContract;
 import com.example.ahmed.imgurapp.Database.PhotoDbHelper;
 import com.example.ahmed.imgurapp.Models.Photo;
 import com.example.ahmed.imgurapp.Models.PhotoResponse;
-import com.example.ahmed.imgurapp.Network.PhotoApi;
-import com.example.ahmed.imgurapp.Network.PhotoClient;
+import com.example.ahmed.imgurapp.Network.OnLoadFinished;
+import com.example.ahmed.imgurapp.Network.PhotoAsyncTask;
 import com.example.ahmed.imgurapp.Util.EndlessRecyclerViewScrollListener;
 import com.google.firebase.crash.FirebaseCrash;
 
@@ -48,7 +47,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     ArrayList<Photo> photos;
     PhotoAdapter photoAdapter;
     EndlessRecyclerViewScrollListener viewScrollListener;
-    PhotoApi photoApi;
     String sort;
     int page = 0;
     boolean preferenceChanged;
@@ -83,7 +81,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             photos = new ArrayList<>();
         photoAdapter = new PhotoAdapter(photos, getContext());
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(
-                2, StaggeredGridLayoutManager.VERTICAL);
+                numberOfColumns(), StaggeredGridLayoutManager.VERTICAL);
         viewScrollListener =
                 new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
                     @Override
@@ -98,8 +96,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         photoView.setAdapter(photoAdapter);
         photoView.setLayoutManager(staggeredGridLayoutManager);
         photoView.addOnScrollListener(viewScrollListener);
-
-        photoApi = PhotoClient.createApi(PhotoClient.buildRetrofit());
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -121,7 +117,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onStart();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sort = prefs
-                .getString("prefs_sort_list_key", getString(R.string.pref_default_sort));
+                .getString(getString(R.string.prefs_sort_list_key), getString(R.string.pref_default_sort));
         if (sort.equals("favourite")) {
             getActivity().getLoaderManager()
                     .initLoader(1, null, this);
@@ -152,38 +148,33 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     public void fetchPhotosData() {
-        progressBar.setVisibility(View.VISIBLE);
-        photoApi.getPhotosData(sort, page
-                , BuildConfig.PHOTO_CLIENT_ID).enqueue(new retrofit2.Callback<PhotoResponse>() {
+        new PhotoAsyncTask(new OnLoadFinished() {
             @Override
-            public void onResponse(@NonNull retrofit2.Call<PhotoResponse> call
-                    , @NonNull retrofit2.Response<PhotoResponse> response) {
-                Log.v("url", response.raw().request().url().toString());
-                if (response.isSuccessful()) {
-                    PhotoResponse photoResponse = response.body();
-                    if (photoResponse != null) {
-                        if (page == 0)
-                            photos = photoResponse.getData();
-                        else
-                            photos.addAll(photoResponse.getData());
-                        photoAdapter.setData(photos);
-                    }
-                    if (getView() != null)
-                        Snackbar.make(getView(), R.string.response_text
-                                , Snackbar.LENGTH_SHORT).show();
-                }
-                progressBar.setVisibility(View.GONE);
+            public void onPreExecute() {
+                progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onFailure(@NonNull retrofit2.Call<PhotoResponse> call, @NonNull Throwable t) {
-                if (getView() != null)
-                    Snackbar.make(getView(), R.string.failure_text
-                            , Snackbar.LENGTH_LONG).show();
+            public void onPostExecute(Object response) {
+                PhotoResponse photoResponse = (PhotoResponse) response;
+                if (photoResponse != null) {
+                    if (page == 0)
+                        photos = photoResponse.getData();
+                    else
+                        photos.addAll(photoResponse.getData());
+                    photoAdapter.setData(photos);
+                    if (getView() != null)
+                        Snackbar.make(getView(), R.string.response_text
+                                , Snackbar.LENGTH_SHORT).show();
+                } else {
+                    if (getView() != null)
+                        Snackbar.make(getView(), R.string.failure_text
+                                , Snackbar.LENGTH_LONG).show();
+                    FirebaseCrash.log(getResources().getString(R.string.failure_text));
+                }
                 progressBar.setVisibility(View.GONE);
-                FirebaseCrash.log(getResources().getString(R.string.failure_text));
             }
-        });
+        }).execute(sort, String.valueOf(page));
     }
 
     @Override
@@ -207,7 +198,15 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (s.equals("prefs_sort_list_key"))
+        if (s.equals(getString(R.string.prefs_sort_list_key)))
             preferenceChanged = true;
+    }
+
+    private int numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int widthDivider = 500;
+        int width = displayMetrics.widthPixels;
+        return width / widthDivider;
     }
 }

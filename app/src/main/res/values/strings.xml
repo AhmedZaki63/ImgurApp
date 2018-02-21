@@ -3,7 +3,8 @@
     <string name="action_settings">Setting</string>
     <string name="action_share">Share</string>
     <string name="action_favourite">Add/Remove Favourite</string>
-
+    <string name="item_photo_content">photo</string>
+    <string name="item_album_content">photo from album</string>
     <string name="description_header">Description</string>
     <string name="no_description_text">No Description</string>
     <string name="tags_header">Tags</string>
@@ -17,6 +18,7 @@
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 
     <!-- Setting Sort -->
+    <string name="prefs_sort_list_key">prefs_sort_list_key</string>
     <string name="pref_sort_title">Sort by</string>
     <string name="pref_default_sort">viral</string>
     <string-array name="pref_sort_list_titles">
@@ -33,5 +35,6 @@
     </string-array>
 
     <!-- Setting Clear Favourite -->
+    <string name="prefs_clear_favourite_key">prefs_clear_favourite_key</string>
     <string name="prefs_title_clear_favourite">Clear Favourite</string>
 </resources>
